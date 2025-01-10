@@ -7,6 +7,8 @@
   outputs = { self, nixpkgs }:
     let
 
+      lib = nixpkgs.lib;
+
       # to work with older version of flakes
       lastModifiedDate = self.lastModifiedDate or self.lastModified or "19700101";
 
@@ -14,13 +16,19 @@
       version = builtins.substring 0 8 lastModifiedDate;
 
       # System types to support.
-      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" "x86_64-linux-cross-aarch64-linux" ];
 
       # Helper function to generate an attrset '{ x86_64-linux = f "x86_64-linux"; ... }'.
-      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      forAllSystems = lib.genAttrs supportedSystems;
 
       # Nixpkgs instantiated for supported system types.
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+      nixpkgsFor = forAllSystems (system: let parts = lib.splitString "-cross-" system; in (
+        if (lib.length parts) == 1 then import nixpkgs { inherit system; } else import nixpkgs {
+          localSystem = lib.elemAt parts 0;
+          hostSystem = lib.elemAt parts 0;
+          crossSystem = lib.elemAt parts 1;
+        }
+      ));
 
     in
     {
@@ -31,26 +39,27 @@
           pkgs = nixpkgsFor.${system};
         in
         {
-          wastebin = with pkgs; rustPlatform.buildRustPackage rec {
+          wastebin = pkgs.rustPlatform.buildRustPackage rec {
             pname = "wastebin";
-            version = "2.4.3";
+            version = "2.5.0-unstable";
 
             src = ./.;
 
-            cargoHash = "sha256-/3nIvDueiU6WelTlgzNYWGhToDUtf3BfUCbWkJhWAaw=";
+            cargoLock.lockFile = ./Cargo.lock;
 
-            nativeBuildInputs = [ pkg-config ];
+            nativeBuildInputs = with nixpkgsFor.${lib.elemAt (lib.splitString "-cross-" system) 0}; [ pkg-config ];
 
-            buildInputs = [ sqlite zstd ];
+            buildInputs = with pkgs; [ sqlite zstd ];
 
-            env.ZSTD_SYS_USE_PKG_CONFIG = true;
+            env.LIBSQLITE3_SYS_USE_PKG_CONFIG = "1";
+            env.ZSTD_SYS_USE_PKG_CONFIG = "1";
 
             meta = with lib; {
               description = "Wastebin is a pastebin";
-              homepage = "https://github.com/matze/wastebin";
-              changelog = "https://github.com/matze/wastebin/blob/${src.rev}/CHANGELOG.md";
+              homepage = "https://github.com/FliegendeWurst/wastebin";
+              changelog = "https://github.com/FliegendeWurst/wastebin/tree/wip";
               license = licenses.mit;
-              maintainers = with maintainers; [ pinpox ];
+              maintainers = with maintainers; [ fliegendewurst ];
               mainProgram = "wastebin";
             };
           };
