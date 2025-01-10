@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
+{% block title %}
+  {% if title.len() > 0 %}<h1>{{ title }}</h1>{% endif %}
+{% endblock %}
+{% block title_content %}{% if title.len() > 0 %}: {{ title }}{% endif %}{% endblock %}
+
 {% block head %}
 <script>
   document.addEventListener('keydown', onKey);
@@ -52,4 +57,27 @@
     <li><a href="{{ base_path.join(id) }}?dl={{ ext }}" class="navigation">download</a></li>
     <li><a href="{{ base_path.join(id) }}?fmt=raw" class="navigation">raw</a></li>
     <li><a href="{{ base_path.join(id) }}?fmt=qr" class="navigation">qr</a></li>
+{% endblock %}
+
+{% block content_post %}
+<script>
+  while (true) {
+    const o = document.querySelector("span.link");
+    if (!o) {
+      break;
+    }
+    let l = o.nextSibling;
+    let link = o.innerHTML;
+    while(l != null && l.tagName == "SPAN" && l.classList.contains("link")) {
+      let prevL = l;
+      l = l.nextSibling;
+      link += prevL.innerText;
+      prevL.remove();
+    }
+    o.setAttribute("href", link);
+    o.innerText = link;
+	o.className = "";
+    o.outerHTML = o.outerHTML.replace(/^<span(.*)span>$/, "<a$1a>");
+  }
+</script>
 {% endblock %}
