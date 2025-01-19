@@ -2,15 +2,50 @@
 
 ## Unreleased
 
-### Added
 
-- <kbd>ctrl</kbd>+<kbd>s</kbd> binding to store a paste.
+## 2.7.0
+
+**2025-01-15**
 
 ### Changed
 
-- Use NonZero internally for data where 0 is not a valid value and
-  any special meaning in expressed via an outer Option.
+- Improve UI by using SVG icons instead of text for action links and buttons,
+  using only flexbox for layouting, round UI elements.
+- Replace QR code button on the QR page with a button that leads back to the
+  paste page.
+- Pre-fill the title box when uploading a local file.
+- Optimize code for minor performance improvements.
+
+### Fix
+
+- Include extension in the QR code link.
+
+
+## 2.6.0
+
+**2025-01-12**
+
+### Added
+
+- <kbd>ctrl</kbd>+<kbd>s</kbd> binding to store a paste.
+- Input field to set a title for a paste.
+- Security headers served with each HTTP response and secure cookie settings.
+- Button to show a paste's QR code.
+
+### Changed
+
+- Use `NonZero` internally for data where 0 is not a valid value and any special
+  meaning in expressed via an outer Option.
 - Show QR code on the page after submitting a burn-after-reading paste.
+- Low-impact performance improvements.
+- Return `FORBIDDEN` on wrong password instead of `INTERNAL_SERVER_ERROR`.
+
+### Fixed
+
+- Paste content selection and copying using <kbd>ctrl</kbd>+<kbd>a</kbd> or
+  mouse.
+- Issues reported by the w3c validator.
+- Vertical auto-scroll.
 
 
 ## 2.5.0
