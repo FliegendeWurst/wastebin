@@ -33,6 +33,22 @@ impl From<crate::Error> for ErrorResponse<'_> {
     }
 }
 
+#[derive(Template)]
+#[template(path = "search.html")]
+pub struct Search<'a> {
+    meta: &'a env::Metadata<'a>,
+    base_path: &'static env::BasePath,
+}
+
+impl Search<'_> {
+    pub fn new() -> Self {
+        Self {
+            meta: &env::METADATA,
+            base_path: &env::BASE_PATH,
+        }
+    }
+}
+
 /// Index page displaying a form for paste insertion and a selection box for languages.
 #[derive(Template)]
 #[template(path = "index.html")]

@@ -47,6 +47,14 @@ fn paste_js() -> impl IntoResponse {
     (js_headers(), DATA.paste.content)
 }
 
+fn flexsearch_js() -> impl IntoResponse {
+    (js_headers(), DATA.flexsearch.content)
+}
+
+fn search_js() -> impl IntoResponse {
+    (js_headers(), DATA.search.content)
+}
+
 pub fn routes() -> Router<AppState> {
     let style_name = &DATA.style.name;
     Router::new()
@@ -56,4 +64,6 @@ pub fn routes() -> Router<AppState> {
         .route("/light.css", get(|| async { light_css() }))
         .route("/index.js", get(|| async { index_js() }))
         .route("/paste.js", get(|| async { paste_js() }))
+        .route("/flexsearch.bundle.js", get(|| async { flexsearch_js() }))
+        .route("/search.js", get(|| async { search_js() }))
 }

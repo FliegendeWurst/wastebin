@@ -7,6 +7,7 @@ mod assets;
 mod form;
 mod json;
 pub(crate) mod paste;
+mod search;
 
 async fn index<'a>(state: State<AppState>) -> Index<'a> {
     Index::new(state.max_expiration)
@@ -21,6 +22,8 @@ pub fn routes() -> Router<AppState> {
         )
         .route("/burn/:id", get(paste::burn_created))
         .route("/delete/:id", get(paste::delete))
+        .route("/search", get(search::search))
+        .route("/search/data", get(search::search_data))
         .merge(assets::routes())
 }
 

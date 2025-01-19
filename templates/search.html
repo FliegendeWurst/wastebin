@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block head %}
+<script defer src="{{ base_path.join("flexsearch.bundle.js") }}"></script>
+{% endblock %}
+
+{% block title %}<form id="search-form"><input type="search" id="search"></form>{% endblock %}
+
+{%- block content -%}
+<div id="search-results"></div>
+<script defer src="{{ base_path.join("search.js") }}"></script>
+{%- endblock -%}
