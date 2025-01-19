@@ -32,6 +32,8 @@ pub static DATA: LazyLock<Data> = LazyLock::new(|| {
     let dark = Css::new("dark", &DARK_CSS);
     let index = Js::new(include_str!("javascript/index.js"));
     let paste = Js::new(include_str!("javascript/paste.js"));
+    let flexsearch = Js::new(include_str!("javascript/flexsearch.bundle.js"));
+    let search = Js::new(include_str!("javascript/search.js"));
     let syntax_set: SyntaxSet =
         syntect::dumps::from_binary(include_bytes!("../assets/newlines.packdump"));
     let link_highlighting = SyntaxDefinition::load_from_str(
@@ -48,6 +50,8 @@ pub static DATA: LazyLock<Data> = LazyLock::new(|| {
         dark,
         index,
         paste,
+        flexsearch,
+        search,
         syntax_set,
         syntaxes,
     }
@@ -70,6 +74,8 @@ pub struct Data<'a> {
     pub dark: Css<'a>,
     pub index: Js<'a>,
     pub paste: Js<'a>,
+    pub flexsearch: Js<'a>,
+    pub search: Js<'a>,
     pub syntax_set: SyntaxSet,
     pub syntaxes: Vec<SyntaxReference>,
 }

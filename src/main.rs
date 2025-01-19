@@ -56,7 +56,7 @@ async fn security_headers_layer(
 ) -> axum::response::Response {
     const SECURITY_HEADERS: [(HeaderName, HeaderValue); 7] = [
         (SERVER, HeaderValue::from_static(PACKAGE_NAME)),
-        (CONTENT_SECURITY_POLICY, HeaderValue::from_static("default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' data: ; font-src 'self' data: ; object-src 'none' ; base-uri 'none' ; frame-ancestors 'none' ; form-action 'self' ;")),
+        (CONTENT_SECURITY_POLICY, HeaderValue::from_static("default-src 'none'; connect-src 'self'; script-src 'self'; img-src 'self' data: ; style-src 'self' data: ; font-src 'self' data: ; object-src 'none' ; base-uri 'none' ; frame-ancestors 'none' ; form-action 'self' ;")),
         (REFERRER_POLICY, HeaderValue::from_static("same-origin")),
         (X_CONTENT_TYPE_OPTIONS, HeaderValue::from_static("nosniff")),
         (X_FRAME_OPTIONS, HeaderValue::from_static("SAMEORIGIN")),

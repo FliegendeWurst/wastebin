@@ -288,6 +288,25 @@ impl Database {
         Ok(())
     }
 
+    pub async fn all(&self) -> Result<Vec<(Id, read::Entry)>, Error> {
+        let conn = self.conn.clone();
+        let ids: Result<_, rusqlite::Error> = spawn_blocking(move || {
+            let conn = conn.lock();
+            let mut query = conn.prepare("SELECT id FROM entries ORDER BY expires DESC").unwrap();
+            let res = query.query_map([], |row| Ok(row.get::<_, u32>(0)?))?.collect::<Vec<_>>();
+            drop(query);
+            Ok(res)
+        })
+        .await?;
+        let mut res = vec![];
+        for id in ids?.into_iter().flat_map(Result::ok) {
+            if let Ok(r) = self.get(Id::from(id), None).await {
+                res.push((Id::from(id), r));
+            }
+        }
+        Ok(res)
+    }
+
     /// Get entire entry for `id`.
     pub async fn get(&self, id: Id, password: Option<Password>) -> Result<read::Entry, Error> {
         let conn = self.conn.clone();
