@@ -42,3 +42,26 @@ function onKey(e) {
     }
   }
 }
+
+function fixupLinks() {
+  while (true) {
+    const o = document.querySelector("span.link");
+    if (!o) {
+      break;
+    }
+    let l = o.nextSibling;
+    let link = o.innerHTML;
+    while(l != null && l.tagName == "SPAN" && l.classList.contains("link")) {
+      let prevL = l;
+      l = l.nextSibling;
+      link += prevL.innerText;
+      prevL.remove();
+    }
+    o.setAttribute("href", link);
+    o.innerText = link;
+     o.className = "";
+    o.outerHTML = o.outerHTML.replace(/^<span(.*)span>$/, "<a$1a>");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", fixupLinks);
